@@ -7,20 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 并发控制
-        run: |
-          while true; do
-
-               num=$(curl https://server.cs.cncfstack.com/github-action/number?token=${{ secrets.NUMBER_COUT}})
-               if [ "x$num" != "x0" ];then
-                    echo "不为0: $num"
-                    curl https://server.cs.cncfstack.com/github-action/decrease?token=${{ secrets.NUMBER_COUT}}
-                    break
-               fi
-
-               echo "⏳ 排队中，等待 60 秒后重新轮询..."
-               sleep 60
-          done
       - uses: actions/checkout@v4
       - name: 获取 Job URL
         env:
@@ -129,10 +115,6 @@ jobs:
 
           echo "执行程序"
           ./cs-executor-linux-amd64
-      - name: 释放任务句柄
-        if: always()  
-        run: |
-          curl https://server.cs.cncfstack.com/github-action/increase?token=${{ secrets.NUMBER_COUT}}
       - name: upload log
         if: always()  
         env:
